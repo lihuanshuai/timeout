@@ -2,7 +2,12 @@
 name = "timeout"
 version = "0.1.0"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Li Huanshuai <lihuanshuaiplus@qq.com>"]
 
 [dependencies]
+web-view = { version = "0.7.3" }
+
+[features]
+edge = ["web-view/edge"]
+
+[dev-dependencies]

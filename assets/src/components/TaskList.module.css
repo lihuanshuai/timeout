@@ -1,0 +1,66 @@
+/* tasks */
+.Tasks {
+    width: 600px;
+    margin: 0px auto;
+    text-align: left;
+}
+
+.Tasks h1 {
+    color: #aa8e8d;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 900;
+}
+
+.Item {
+    background: #ae5f7521;
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid #2C3E50;
+    color: #fff;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-indent: 16px;
+    transition: all 0.7s ease;
+    position: relative;
+    padding: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.Item h2 {
+    font-size: 24px;
+}
+
+.Item h2 span {
+    padding-left: 20px;
+    font-size: 10px;
+    font-weight: normal;
+    color: #fff;
+}
+
+.Title {
+    display: inline-block;
+    width: 92%;
+}
+
+.Close {
+    cursor: pointer;
+}
+
+.Progress {
+    z-index: 1;
+    width: 0px;
+    height: 100%;
+    position: absolute;
+    background: #ae5f75;
+    left: 0px;
+    top: 0px;
+}
+
+.Content {
+    z-index: 9;
+    position: relative;
+}
