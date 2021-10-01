@@ -1,6 +1,6 @@
 /* tasks */
 .Tasks {
-    width: 600px;
+    width: 800px;
     margin: 0px auto;
     text-align: left;
 }
@@ -36,9 +36,20 @@
 
 .Item h2 span {
     padding-left: 20px;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: normal;
     color: #fff;
+}
+
+.Item input {
+    font-size: 24px;
+    background-color: unset;
+    border: solid 0;
+    color: white;
+}
+
+.Item h2 span input {
+    font-size: 16px;
 }
 
 .Title {
@@ -48,6 +59,11 @@
 
 .Close {
     cursor: pointer;
+    font-size: 24px;
+}
+
+input.Close {
+    padding: 0;
 }
 
 .Progress {

@@ -6,7 +6,7 @@ const App: React.FC = () => {
     return (
         <div className="App">
             <Suspense fallback={<div>Loading...</div>}>
-                <TaskList />
+                <TaskList title="Progressing" />
             </Suspense>
         </div>
     );
