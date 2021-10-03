@@ -1,0 +1,29 @@
+[tasks.install]
+linux_alias = "unix_install"
+windows_alias = "windows_install"
+mac_alias = "unix_install"
+
+[tasks.windows_install]
+condition = { files_not_exist=["./node_modules"] }
+command = "powershell"
+args = ["npm", "install"]
+
+[tasks.unix_install]
+condition = { files_not_exist=["./node_modules"] }
+command = "npm"
+args = ["install"]
+
+[tasks.build]
+linux_alias = "unix_build"
+windows_alias = "windows_build"
+mac_alias = "unix_build"
+
+[tasks.windows_build]
+command = "powershell"
+args = ["npm", "run-script", "build"]
+dependencies = ["windows_install"]
+
+[tasks.unix_build]
+command = "npm"
+args = ["run-script", "build"]
+dependencies = ["unix_install"]
