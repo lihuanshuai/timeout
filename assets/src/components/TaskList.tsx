@@ -13,6 +13,8 @@ const TaskItem = ({ task, onDelete }: { task: Task, onDelete: (string) => void }
         onDelete(task.name);
     };
     useEffect(() => {
+        const now = new Date().getTime() / 1000.0;
+        setLeft(targetTime - now);
         const intervalID = setInterval(() => {
             const now = new Date().getTime() / 1000.0;
             setLeft(targetTime - now);
