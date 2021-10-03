@@ -1,12 +1,13 @@
 import React, { Suspense } from 'react';
+import { Task } from './types';
 import TaskList from './components/TaskList';
 import "./App.module.css";
 
-const App: React.FC = () => {
+const App = ({ tasks }: { tasks: Task[] }) => {
     return (
         <div className="App">
             <Suspense fallback={<div>Loading...</div>}>
-                <TaskList title="Progressing" />
+                <TaskList title="Progressing" tasks={tasks} />
             </Suspense>
         </div>
     );

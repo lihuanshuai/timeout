@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useLocalStorage } from './localStorage';
-import styles from './TaskList.module.css';
-
-interface Task {
-    name: string;
-    createTime: number;
-    duration: number;
-};
+import { addTask, delTask } from '../rpc';
+import { Task } from '../types';
+import * as styles from './TaskList.module.css';
 
 const TaskItem = ({ task, onDelete }: { task: Task, onDelete: (string) => void }) => {
     const [left, setLeft] = useState(0);
-    const targetTime = task.createTime + task.duration;
+    const targetTime = task.create_time + task.duration;
     const durationStr = left >= 0 ? formatDuration(left) : formatDuration(-left);
     const comment = left >= 0 ? `left ${durationStr}` : `succeeded ${durationStr} ago`;
     const progress = left >= 0 ? left / task.duration : 100;
@@ -118,8 +113,7 @@ const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
     );
 };
 
-const TaskList = ({ title }: { title: string }) => {
-    const [tasks, setTasks] = useLocalStorage('tasks', [] as Task[]);
+const TaskList = ({ title, tasks }: { title: string, tasks: Task[] }) => {
     const handleAppend = (title: string, duration: number) => {
         console.log('append task', title, duration);
         const existedTasks = tasks.filter((x) => x.name == title);
@@ -127,14 +121,12 @@ const TaskList = ({ title }: { title: string }) => {
             return;
         }
         const t = new Date().getTime() / 1000.0;
-        const task: Task = { name: title, createTime: t, duration: duration };
-        const newTasks = [...tasks, task];
-        setTasks(newTasks);
+        const task: Task = { name: title, create_time: t, duration: duration };
+        addTask(task);
     };
     const handleDelete = (title: string) => {
         console.log('delete task', title);
-        const newTasks = tasks.filter((x) => x.name != title);
-        setTasks(newTasks);
+        delTask(title);
     };
     const taskElements = tasks.map((task: Task) => {
         return <TaskItem key={task.name} task={task} onDelete={handleDelete} />

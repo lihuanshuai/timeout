@@ -5,9 +5,10 @@ edition = "2018"
 authors = ["Li Huanshuai <lihuanshuaiplus@qq.com>"]
 
 [dependencies]
-web-view = { version = "0.7.3" }
-
-[features]
-edge = ["web-view/edge"]
+web-view = { version = "0.7", features = ["edge"] }
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
+log = "0.4.14"
 
 [dev-dependencies]
