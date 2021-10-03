@@ -8,7 +8,7 @@ const TaskItem = ({ task, onDelete }: { task: Task, onDelete: (string) => void }
     const targetTime = task.create_time + task.duration;
     const durationStr = left >= 0 ? formatDuration(left) : formatDuration(-left);
     const comment = left >= 0 ? `left ${durationStr}` : `succeeded ${durationStr} ago`;
-    const progress = left >= 0 ? left / task.duration : 100;
+    const progress = left >= 0 ? (1.0 - left / task.duration) * 100 : 100;
     const handleClose = () => {
         onDelete(task.name);
     };
