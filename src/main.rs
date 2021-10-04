@@ -76,11 +76,14 @@ fn main() {
                         name,
                         create_time,
                         duration,
-                    } => props.tasks.push(Task {
-                        name,
-                        create_time: create_time,
-                        duration: duration,
-                    }),
+                    } => {
+                        props.tasks.retain(|t| t.name != name);
+                        props.tasks.push(Task {
+                            name,
+                            create_time: create_time,
+                            duration: duration,
+                        })
+                    }
                     DelTask { name } => props.tasks.retain(|t| t.name != name),
                 }
 

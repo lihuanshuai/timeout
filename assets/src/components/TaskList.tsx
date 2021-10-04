@@ -118,10 +118,6 @@ const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
 const TaskList = ({ title, tasks }: { title: string, tasks: Task[] }) => {
     const handleAppend = (title: string, duration: number) => {
         console.log('append task', title, duration);
-        const existedTasks = tasks.filter((x) => x.name == title);
-        if (existedTasks.length) {
-            return;
-        }
         const t = new Date().getTime() / 1000.0;
         const task: Task = { name: title, create_time: t, duration: duration };
         addTask(task);
