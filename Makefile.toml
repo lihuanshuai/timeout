@@ -4,3 +4,9 @@ args = ["build", "--release"]
 dependencies = [
     { name="build", path="./assets" }
 ]
+
+
+[tasks.build_assets]
+dependencies = [
+    { name="build", path="./assets" }
+]

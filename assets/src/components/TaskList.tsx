@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import isDeepEqual from 'fast-deep-equal/react';
 import { addTask, delTask } from '../rpc';
 import { Task } from '../types';
 import * as styles from './TaskList.module.css';
 
-const TaskItem = ({ task, onDelete }: { task: Task, onDelete: (string) => void }) => {
-    const [left, setLeft] = useState(0);
-    const targetTime = task.create_time + task.duration;
+const TaskItem = ({ task, left, onDelete }: {
+    task: Task, left: number, onDelete: (string) => void
+}) => {
     const durationStr = left >= 0 ? formatDuration(left) : formatDuration(-left);
     const comment = left >= 0 ? `left ${durationStr}` : `succeeded ${durationStr} ago`;
     const progress = left >= 0 ? (1.0 - left / task.duration) * 100 : 100;
     const handleClose = () => {
         onDelete(task.name);
     };
-    useEffect(() => {
-        const now = new Date().getTime() / 1000.0;
-        setLeft(targetTime - now);
-        const intervalID = setInterval(() => {
-            const now = new Date().getTime() / 1000.0;
-            setLeft(targetTime - now);
-        }, 1000);
-        return () => {
-            clearInterval(intervalID);
-        }
-    }, [targetTime]);
+
     return (
         <div className={styles.Item}>
             <div className={styles.Progress} style={{ width: `${progress}%` }}></div>
@@ -48,7 +39,7 @@ const formatDuration = (d: number) => {
     for (const base of bases) {
         numbers.push(Math.floor(d / base));
         d = d % base;
-    };
+    }
     let isLeadingZero = true;
     let output = '';
     for (let idx = 0; idx < numbers.length; idx += 1) {
@@ -120,6 +111,23 @@ const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
 };
 
 const TaskList = ({ title, tasks }: { title: string, tasks: Task[] }) => {
+    const [taskLefts, setTaskLefts] = useState([]);
+    const targetTimes = tasks.map((t) => t.create_time + t.duration);
+    const targetTimesRef = useRef([]);
+    if (!isDeepEqual(targetTimesRef.current, targetTimes)) {
+        targetTimesRef.current = targetTimes;
+    }
+    useEffect(() => {
+        const now = new Date().getTime() / 1000.0;
+        setTaskLefts(targetTimesRef.current.map((t) => t - now));
+        const intervalID = setInterval(() => {
+            const now = new Date().getTime() / 1000.0;
+            setTaskLefts(targetTimesRef.current.map((t) => t - now));
+        }, 1000);
+        return () => {
+            clearInterval(intervalID);
+        }
+    }, [targetTimesRef.current]);
     const handleAppend = (title: string, duration: number) => {
         console.log('append task', title, duration);
         const t = new Date().getTime() / 1000.0;
@@ -130,8 +138,23 @@ const TaskList = ({ title, tasks }: { title: string, tasks: Task[] }) => {
         console.log('delete task', title);
         delTask(title);
     };
-    const taskElements = tasks.map((task: Task) => {
-        return <TaskItem key={task.name} task={task} onDelete={handleDelete} />
+    const taskRows = tasks.map((t, i) => [t, taskLefts[i]]).sort(
+        (a, b) => {
+            const x = a[1];
+            const y = b[1];
+            if (x <= 0) {
+                return y <= 0 ? (y - x) : 1;
+            } else {
+                return y > 0 ? (x - y) : -1;
+            }
+        }
+    );
+    const taskElements = taskRows.map((entry) => {
+        const task = entry[0];
+        const left = entry[1];
+        return (
+            <TaskItem key={task.name} task={task} left={left} onDelete={handleDelete} />
+        );
     });
     return (
         <div className={styles.Tasks}>
