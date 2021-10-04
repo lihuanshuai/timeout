@@ -81,17 +81,18 @@ const parseDuration = (s: string) => {
 };
 
 const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
+    const [title, setTitle] = useState("");
+    const [durationStr, setDurationStr] = useState("");
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const title = data.get('title') as string;
-        const durationStr = data.get('duration') as string;
         const duration = parseDuration(durationStr);
         if (!title || !duration) {
             window.alert('title or duration should NOT be empty');
             return;
         }
         onSubmit(title, duration);
+        setTitle("");
+        setDurationStr("");
     };
     return (
         <div className={styles.Item}>
@@ -100,14 +101,17 @@ const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
                 <form onSubmit={handleSubmit}>
                     <div className={styles.Title}>
                         <h2>
-                            <input type="text" name="title" placeholder="title ..." style={{ width: "60%" }}>
+                            <input type="text" name="title" placeholder="title ..." style={{ width: "60%" }}
+                                value={title} onChange={(evt) => setTitle(evt.target.value)}>
                             </input>
                             <span>
-                                <input type="text" name="duration" placeholder="duration ..."></input>
+                                <input type="text" name="duration" placeholder="duration ..."
+                                    value={durationStr} onChange={(evt) => setDurationStr(evt.target.value)}>
+                                </input>
                             </span>
                         </h2>
                     </div>
-                    <input type="submit" className={styles.Close} value="✓">
+                    <input type="submit" className={styles.Close} value="+">
                     </input>
                 </form>
             </div >

@@ -60,7 +60,7 @@ fn main() {
         .title("Timeout")
         .content(Content::Html(html))
         .size(800, 600)
-        .resizable(false)
+        .resizable(true)
         .debug(true)
         .user_data(props)
         .invoke_handler(|webview, arg| {
