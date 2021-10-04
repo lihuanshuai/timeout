@@ -1,12 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal/react';
 import { addTask, delTask } from '../rpc';
 import { Task } from '../types';
 import TaskItem from './TaskItem';
 import TaskItemForm from './TaskItemForm';
+import { Dispatch, reducer, initialState } from './TaskItemFormReducer';
 import * as styles from './TaskList.module.css';
 
+
 const TaskList = ({ title, tasks }: { title: string, tasks: Task[] }) => {
+    const [state, dispatch] = useReducer(reducer, initialState);
     const [taskLefts, setTaskLefts] = useState([]);
     const targetTimes = tasks.map((t) => t.create_time + t.duration);
     const targetTimesRef = useRef([]);
@@ -53,11 +56,13 @@ const TaskList = ({ title, tasks }: { title: string, tasks: Task[] }) => {
         );
     });
     return (
-        <div className={styles.Tasks}>
-            <h1>{title}</h1>
-            {taskElements}
-            <TaskItemForm onSubmit={handleAppend} />
-        </div>
+        <Dispatch.Provider value={dispatch}>
+            <div className={styles.Tasks}>
+                <h1>{title}</h1>
+                {taskElements}
+                <TaskItemForm title={state.title} duration={state.duration} onSubmit={handleAppend} />
+            </div>
+        </Dispatch.Provider>
     );
 };
 export default TaskList;

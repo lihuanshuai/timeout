@@ -1,51 +1,29 @@
 
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { log } from '../rpc';
+import { ActionType, Dispatch } from './TaskItemFormReducer';
 import * as itemStyles from './TaskItem.module.css';
 
-interface InitialState {
-    title: string;
-    duration: string;
-}
-
-const initialState: InitialState = {
-    title: "",
-    duration: "",
-};
-
-export enum ActionType {
-    SetTitle = "TASK_ITEM_FORM/SET_TITLE",
-    SetDuration = "TASK_ITEM_FORM/SET_DURATION",
-}
-
-const reducer = (state: InitialState, action: any) => {
-    switch (action.type) {
-        case ActionType.SetTitle:
-            return { ...state, title: action.title };
-        case ActionType.SetDuration:
-            return { ...state, duration: action.duration };
-        default:
-            throw new Error();
+function TaskItemForm({ title, duration, onSubmit }: {
+    title: string, duration: string, onSubmit: (string, number) => void
+}) {
+    const dispatch = useContext(Dispatch);
+    if (!dispatch) {
+        throw new Error("unsupported dispatch");
     }
-};
-
-// export const Dispatch = React.createContext<React.Dispatch<any> | null>(null);
-
-const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
-    const [title, setTitle] = useState('');
-    const [durationStr, setDurationStr] = useState('');
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        log("submit:", title, duration);
         event.preventDefault();
-        const duration = parseDuration(durationStr);
-        if (!title || !durationStr) {
+        const durationNum = parseDuration(duration);
+        if (!title || !duration) {
             window.alert('title or duration should NOT be empty');
             return;
         }
-        onSubmit(title, duration);
-        setTitle("");
-        setDurationStr("");
+        onSubmit(title, durationNum);
+        dispatch({ type: ActionType.SetTitle, title: "" });
+        dispatch({ type: ActionType.SetDuration, duration: "" });
     };
     return (
-        // <Dispatch.Provider value={dispatch}>
         <div className={itemStyles.Item}>
             <div className={itemStyles.Progress} style={{ width: '0%' }}></div>
             <div className={itemStyles.Content}>
@@ -53,14 +31,20 @@ const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
                     <div className={itemStyles.Title}>
                         <h2>
                             <input type="text" name="title" placeholder="title ..." style={{ width: "60%" }}
-                                value={title} onChange={
-                                    (evt) => setTitle(evt.target.value)
+                                value={title}
+                                onChange={
+                                    (evt) => {
+                                        dispatch({ type: ActionType.SetTitle, title: evt.target.value });
+                                    }
                                 }>
                             </input>
                             <span className={itemStyles.Comment}>
                                 <input type="text" name="duration" placeholder="duration ..."
-                                    value={durationStr} onChange={
-                                        (evt) => setDurationStr(evt.target.value)
+                                    value={duration}
+                                    onChange={
+                                        (evt) => {
+                                            dispatch({ type: ActionType.SetDuration, duration: evt.target.value });
+                                        }
                                     }>
                                 </input>
                             </span>
@@ -71,9 +55,8 @@ const TaskItemForm = ({ onSubmit }: { onSubmit: (string, number) => void }) => {
                 </form>
             </div >
         </div >
-        // </Dispatch.Provider>
     );
-};
+}
 export default TaskItemForm;
 
 const parseDuration = (s: string) => {

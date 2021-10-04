@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Task } from '../types';
+import { ActionType, Dispatch } from './TaskItemFormReducer';
 import * as styles from './TaskItem.module.css';
 
 const TaskItem = ({ task, left, onDelete }: {
     task: Task, left: number, onDelete: (string) => void
 }) => {
+    const dispatch = useContext(Dispatch);
+    if (!dispatch) {
+        throw new Error("unsupported dispatch");
+    }
     const durationStr = left >= 0 ? formatDuration(left) : formatDuration(-left);
     const comment = left >= 0 ? `left ${durationStr}` : `succeeded ${durationStr} ago`;
     const progress = left >= 0 ? (1.0 - left / task.duration) * 100 : 100;
@@ -18,9 +23,9 @@ const TaskItem = ({ task, left, onDelete }: {
             <div className={styles.Content}>
                 <div className={styles.Title}>
                     <h2>
-                        <span
-                            onClick={() => {
-                                // dispatch({ type: ActionType.SetTitle, title: task.name })
+                        <span onClick={
+                            () => {
+                                dispatch({type: ActionType.SetTitle, title: task.name});
                             }}>
                             {task.name}
                         </span>
