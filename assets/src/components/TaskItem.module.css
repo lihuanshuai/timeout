@@ -1,0 +1,68 @@
+.Item {
+    background: #ae5f7521;
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid #2C3E50;
+    color: #fff;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-indent: 16px;
+    transition: all 0.7s ease;
+    position: relative;
+    padding: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.Item h2 {
+    font-size: 24px;
+}
+
+.Item h2 .Comment {
+    padding-left: 20px;
+    font-size: 14px;
+    font-weight: normal;
+    color: #fff;
+}
+
+.Item input {
+    font-size: 24px;
+    background-color: unset;
+    border: solid 0;
+    color: white;
+}
+
+.Item h2 .Comment input {
+    font-size: 16px;
+}
+
+.Title {
+    display: inline-block;
+    width: 92%;
+}
+
+.Close {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+input.Close {
+    padding: 0;
+}
+
+.Progress {
+    z-index: 1;
+    width: 0px;
+    height: 100%;
+    position: absolute;
+    background: #ae5f75;
+    left: 0px;
+    top: 0px;
+}
+
+.Content {
+    z-index: 9;
+    position: relative;
+}

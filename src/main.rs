@@ -106,7 +106,7 @@ fn main() {
 fn render(webview: &mut WebView<Props>) -> WVResult {
     let render_tasks = {
         let props = webview.user_data();
-        // println!("{:#?}", tasks);
+        // println!("{:#?}", props);
         format!(
             "window.renderApp({})",
             serde_json::to_string(props).unwrap()

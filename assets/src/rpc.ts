@@ -1,7 +1,12 @@
 import { Task } from "./types";
 
 const invoke = (arg) => {
-    (window.external as any).invoke(JSON.stringify(arg));
+    const external = window.external as any;
+    if (!external.invoke) {
+        console.log('invoke', arg);
+        return;
+    }
+    external.invoke(JSON.stringify(arg));
 }
 
 export const init = () => {
@@ -11,7 +16,7 @@ export const init = () => {
 export const log = (...args) => {
     let s = '';
     for (const arg of args) {
-        s = s + JSON.stringify(arg);
+        s = s + ' ' + JSON.stringify(arg);
     }
     invoke({ cmd: 'log', text: s });
 };

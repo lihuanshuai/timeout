@@ -10,7 +10,7 @@
     "author": "Li Huanshuai",
     "dependencies": {
         "@types/classnames": "^2.3.1",
-        "@types/react": "^17.0.20",
+        "@types/react": "^17.0.27",
         "@types/react-dom": "^17.0.9",
         "classnames": "^2.3.1",
         "fast-deep-equal": "^3.1.3",
