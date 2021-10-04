@@ -1,5 +1,10 @@
 //#![windows_subsystem = "windows"]
 
+use std::env;
+use std::fs;
+use std::io;
+use std::path::PathBuf;
+
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
@@ -39,13 +44,25 @@ fn main() {
     );
     // println!("html {}", html);
 
+    let dump_path = match get_props_dump_path() {
+        Ok(exe_path) => exe_path,
+        Err(e) => panic!("failed to get props dump path: {}", e),
+    };
+    println!("props dump path: {}", dump_path.to_str().unwrap());
+
+    let handler = DumpHandler::new(dump_path);
+    let props = match handler.read() {
+        Ok(props) => props,
+        Err(_) => Props { tasks: vec![] },
+    };
+
     let mut webview = web_view::builder()
         .title("Timeout")
         .content(Content::Html(html))
         .size(800, 600)
         .resizable(false)
         .debug(true)
-        .user_data(Props { tasks: vec![] })
+        .user_data(props)
         .invoke_handler(|webview, arg| {
             use Cmd::*;
 
@@ -79,8 +96,8 @@ fn main() {
     webview.set_color((156, 39, 176));
 
     let res = webview.run().unwrap();
-
     println!("final state: {:?}", res);
+    handler.write(&res).unwrap();
 }
 
 fn render(webview: &mut WebView<Props>) -> WVResult {
@@ -122,6 +139,42 @@ pub enum Cmd {
     DelTask {
         name: String,
     },
+}
+
+struct DumpHandler {
+    path: PathBuf,
+}
+
+impl DumpHandler {
+    fn new(path: PathBuf) -> DumpHandler {
+        DumpHandler { path: path }
+    }
+
+    fn read(&self) -> Result<Props, Box<dyn std::error::Error>> {
+        if !self.path.is_file() {
+            Ok(Props { tasks: vec![] })
+        } else {
+            let content = fs::read_to_string(&self.path)?;
+            println!("loaded content from {}", content);
+            match serde_json::from_str(&content) {
+                Ok(props) => Ok(props),
+                Err(_) => Ok(Props { tasks: vec![] }), // TODO: pass error
+            }
+        }
+    }
+
+    fn write(&self, props: &Props) -> Result<(), Box<dyn std::error::Error>> {
+        let content = serde_json::to_string(&props)?;
+        fs::write(&self.path, content)?;
+        Ok(())
+    }
+}
+
+fn get_props_dump_path() -> io::Result<PathBuf> {
+    let mut path = env::current_exe()?;
+    path.pop();
+    path.push("props_dump.json");
+    Ok(path)
 }
 
 fn inline_style(s: &str) -> String {
