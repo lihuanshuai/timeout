@@ -1,10 +1,10 @@
 import React, { useEffect, useReducer, useRef, useState } from 'react';
 import isDeepEqual from 'fast-deep-equal/react';
 import { addTask, delTask } from '../rpc';
-import { BaseTask } from '../types';
+import { BaseTask, Task } from '../types';
 import TaskItem from './TaskItem';
 import TaskItemForm from './TaskItemForm';
-import { Dispatch, reducer, initialState } from '../reducers/TaskItemForm';
+import { reducer, initialState, Dispatch } from '../reducers/TaskItemForm';
 import * as styles from './TaskList.module.css';
 
 
@@ -26,7 +26,7 @@ const TaskList = ({ title, tasks }: { title: string, tasks: BaseTask[] }): JSX.E
         return () => {
             clearInterval(intervalID);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [targetTimesRef.current]);
     const handleAppend = (title: string, duration: number) => {
         console.log('append task', title, duration);
@@ -38,7 +38,7 @@ const TaskList = ({ title, tasks }: { title: string, tasks: BaseTask[] }): JSX.E
         console.log('delete task', title);
         delTask(title);
     };
-    const fullTasks = tasks.map((t, i) => ({ ...t, left: taskLefts[i] }));
+    const fullTasks: Task[] = tasks.map((t, i) => ({ ...t, left: taskLefts[i] }));
     fullTasks.sort(
         (a, b) => {
             const x = a.left;

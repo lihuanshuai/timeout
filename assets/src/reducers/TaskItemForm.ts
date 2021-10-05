@@ -6,6 +6,12 @@ interface InitialState {
     duration: string;
 }
 
+interface Action {
+    type: string;
+    title?: string;
+    duration?: string;
+}
+
 export const initialState: InitialState = {
     title: "",
     duration: "",
@@ -16,7 +22,7 @@ export enum ActionType {
     SetDuration = "TASK_ITEM_FORM/SET_DURATION",
 }
 
-export const reducer = (state: InitialState, action: any) => {
+export const reducer = (state: InitialState, action: Action): InitialState => {
     log("reducer:", state, action);
     switch (action.type) {
         case ActionType.SetTitle:
@@ -28,4 +34,4 @@ export const reducer = (state: InitialState, action: any) => {
     }
 };
 
-export const Dispatch = React.createContext<React.Dispatch<any> | null>(null);
+export const Dispatch = React.createContext<React.Dispatch<Action> | null>(null);
