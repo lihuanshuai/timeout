@@ -6,7 +6,7 @@ import * as itemStyles from './TaskItem.module.css';
 
 function TaskItemForm({ title, duration, onSubmit }: {
     title: string, duration: string, onSubmit: (string, number) => void
-}) {
+}): JSX.Element {
     const dispatch = useContext(Dispatch);
     if (!dispatch) {
         throw new Error("unsupported dispatch");

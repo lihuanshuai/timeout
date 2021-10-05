@@ -9,15 +9,15 @@
     },
     "author": "Li Huanshuai",
     "dependencies": {
-        "@types/classnames": "^2.3.1",
-        "@types/react": "^17.0.27",
-        "@types/react-dom": "^17.0.9",
         "classnames": "^2.3.1",
         "fast-deep-equal": "^3.1.3",
         "react": "^17.0.2",
         "react-dom": "^17.0.2"
     },
     "devDependencies": {
+        "@types/classnames": "^2.3.1",
+        "@types/react": "^17.0.27",
+        "@types/react-dom": "^17.0.9",
         "@babel/plugin-proposal-object-rest-spread": "^7.15.6",
         "@typescript-eslint/eslint-plugin": "^4.32.0",
         "@typescript-eslint/parser": "^4.32.0",

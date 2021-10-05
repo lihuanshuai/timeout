@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
-import { Task } from './types';
+import { BaseTask } from './types';
 import TaskList from './components/TaskList';
 import "./App.module.css";
 
-const App = ({ tasks }: { tasks: Task[] }) => {
+const App = ({ tasks }: { tasks: BaseTask[] }): JSX.Element => {
     return (
         <div className="App">
             <Suspense fallback={<div>Loading...</div>}>
