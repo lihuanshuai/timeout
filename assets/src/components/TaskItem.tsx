@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Task } from '../types';
-import { ActionType, Dispatch } from './TaskItemFormReducer';
+import { ActionType, Dispatch } from '../reducers/TaskItemForm';
 import * as styles from './TaskItem.module.css';
 
 const TaskItem = ({ task, onDelete }: { task: Task, onDelete: (string) => void }): JSX.Element => {

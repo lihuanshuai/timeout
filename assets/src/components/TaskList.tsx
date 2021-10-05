@@ -4,7 +4,7 @@ import { addTask, delTask } from '../rpc';
 import { BaseTask } from '../types';
 import TaskItem from './TaskItem';
 import TaskItemForm from './TaskItemForm';
-import { Dispatch, reducer, initialState } from './TaskItemFormReducer';
+import { Dispatch, reducer, initialState } from '../reducers/TaskItemForm';
 import * as styles from './TaskList.module.css';
 
 

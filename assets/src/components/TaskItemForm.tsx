@@ -1,7 +1,7 @@
 
 import React, { useContext } from 'react';
 import { log } from '../rpc';
-import { ActionType, Dispatch } from './TaskItemFormReducer';
+import { ActionType, Dispatch } from '../reducers/TaskItemForm';
 import * as itemStyles from './TaskItem.module.css';
 
 function TaskItemForm({ title, duration, onSubmit }: {
