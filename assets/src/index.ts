@@ -20,6 +20,9 @@ interface AppRender {
     }
 };
 
-window.onload = function () { init(); };
+window.onload = function () {
+    log("init:", window.location.href);
+    init();
+};
 
 (window as unknown as AppRender).renderApp({ tasks: [] });

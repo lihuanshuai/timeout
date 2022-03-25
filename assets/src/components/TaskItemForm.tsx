@@ -12,7 +12,7 @@ function TaskItemForm({ title, duration, onSubmit }: {
         throw new Error("unsupported dispatch");
     }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        log("submit:", title, duration);
+        log("TaskItemForm submit:", title, duration);
         event.preventDefault();
         const durationNum = parseDuration(duration);
         if (!title || !duration) {

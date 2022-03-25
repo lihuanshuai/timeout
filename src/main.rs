@@ -3,16 +3,38 @@
 use std::env;
 use std::fs;
 use std::io;
+use std::process;
 use std::path::PathBuf;
+
+extern crate log;
+extern crate log4rs;
+use log::LevelFilter;
+use log4rs::append::file::FileAppender;
+use log4rs::config::{Appender, Config, Root};
+use log4rs::encode::pattern::PatternEncoder;
 
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
 extern crate web_view;
 
-use web_view::*;
+use web_view::{Content, WVResult, WebView};
+
+fn init_logger() {
+    let path = get_log_path().unwrap();
+    let file = FileAppender::builder()
+        .encoder(Box::new(PatternEncoder::new("{d} - {m}{n}")))
+        .build(path)
+        .unwrap();
+    let config = Config::builder()
+        .appender(Appender::builder().build("file", Box::new(file)))
+        .build(Root::builder().appender("file").build(LevelFilter::Info))
+        .unwrap();
+    log4rs::init_config(config).unwrap();
+}
 
 fn main() {
+    init_logger();
     let html = format!(
         r#"
 		<!doctype html>
@@ -42,13 +64,16 @@ fn main() {
         styles = inline_style(include_str!("../assets/dist/index.css")),
         scripts = inline_script(include_str!("../assets/dist/index.js"))
     );
-    // println!("html {}", html);
+    log::debug!("html {}", html);
 
     let dump_path = match get_props_dump_path() {
         Ok(exe_path) => exe_path,
-        Err(e) => panic!("failed to get props dump path: {}", e),
+        Err(e) => {
+            log::error!("failed to get props dump path: {}", e);
+            process::exit(1);
+        }
     };
-    println!("props dump path: {}", dump_path.to_str().unwrap());
+    log::info!("props dump path: {}", dump_path.to_str().unwrap());
 
     let handler = DumpHandler::new(dump_path);
     let props = match handler.read() {
@@ -71,7 +96,7 @@ fn main() {
 
                 match serde_json::from_str(arg).unwrap() {
                     Init => (),
-                    Log { text } => println!("{}", text),
+                    Log { text } => log::info!("{}", text),
                     AddTask {
                         name,
                         create_time,
@@ -99,14 +124,14 @@ fn main() {
     webview.set_color((156, 39, 176));
 
     let res = webview.run().unwrap();
-    println!("final state: {:?}", res);
+    log::info!("final state: {:?}", res);
     handler.write(&res).unwrap();
 }
 
 fn render(webview: &mut WebView<Props>) -> WVResult {
     let render_tasks = {
         let props = webview.user_data();
-        // println!("{:#?}", props);
+        log::debug!("{:#?}", props);
         format!(
             "window.renderApp({})",
             serde_json::to_string(props).unwrap()
@@ -158,7 +183,7 @@ impl DumpHandler {
             Ok(Props { tasks: vec![] })
         } else {
             let content = fs::read_to_string(&self.path)?;
-            println!("loaded content from {}", content);
+            log::info!("loaded content from {}", content);
             match serde_json::from_str(&content) {
                 Ok(props) => Ok(props),
                 Err(_) => Ok(Props { tasks: vec![] }), // TODO: pass error
@@ -177,6 +202,13 @@ fn get_props_dump_path() -> io::Result<PathBuf> {
     let mut path = env::current_exe()?;
     path.pop();
     path.push("props_dump.json");
+    Ok(path)
+}
+
+fn get_log_path() -> io::Result<PathBuf> {
+    let mut path = env::current_exe()?;
+    path.pop();
+    path.push("timeout.log");
     Ok(path)
 }
 

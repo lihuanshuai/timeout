@@ -1,5 +1,5 @@
 import React from "react";
-import { log } from "../rpc";
+// import { log } from "../rpc";
 
 interface InitialState {
     title: string;
@@ -23,7 +23,7 @@ export enum ActionType {
 }
 
 export const reducer = (state: InitialState, action: Action): InitialState => {
-    log("reducer:", state, action);
+    // log("reducer:", state, action);
     switch (action.type) {
         case ActionType.SetTitle:
             return { ...state, title: action.title };
